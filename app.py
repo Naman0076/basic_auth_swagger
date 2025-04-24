@@ -94,8 +94,9 @@ def goodbye():
 })
 def students():
     students = Student.query.all()
-    return render_template('index.html', students=students)
-
+    return jsonify([student.to_dict() for student in students])
+ 
+ 
 @app.route('/<int:student_id>/', methods=["GET"])
 @swag_from({
     'parameters': [
@@ -120,7 +121,7 @@ def student(student_id):
     student = Student.query.get_or_404(student_id)
     return render_template('student.html', student=student)
 
-@app.route('/<int:student_id>/edit/', methods=['GET', 'POST'])
+@app.route('/<int:student_id>/edit/', methods=['POST'])
 @swag_from({
     'parameters': [
         {
@@ -192,7 +193,7 @@ def delete(student_id):
     db.session.commit()
     return redirect(url_for('students'))
 
-@app.route('/create/', methods=['GET', 'POST'])
+@app.route('/create/', methods=['POST'])
 @swag_from({
     'parameters': [
         {
